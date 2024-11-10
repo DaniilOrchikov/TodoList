@@ -1,4 +1,4 @@
-import {Box, Button, Checkbox, Container, FormControlLabel, Paper, TextField} from "@mui/material";
+import {Box, Button, Checkbox, Container, FormControlLabel, Paper, TextField, Typography} from "@mui/material";
 import {useState} from "react";
 
 const TodoApp = () => {
@@ -25,6 +25,9 @@ const TodoApp = () => {
     }
     const handleFavouriteChange = (id) => {
         setTasks(tasks.map(todo => todo.id === id ? {...todo, isFavorite: !todo.isFavorite} : todo));
+    }
+    const handleDelete = (id) => {
+        setTasks(tasks.filter(todo => todo.id !== id));
     }
     const sortedTasks = [...tasks].sort((a, b) => {
         if (a.isFavorite && !b.isFavorite) {
@@ -61,21 +64,31 @@ const TodoApp = () => {
             <Box sx={{width: 600}}>
                 {sortedTasks.map((task) => (
                     <Paper key={task.id} elevation={3}
-                           sx={{display: "flex", margin: 1, paddingRight: 1, paddingLeft: 1, width: "94%"}}>
+                           sx={{
+                               display: "flex",
+                               margin: 1,
+                               paddingRight: 1,
+                               paddingLeft: 1,
+                               width: "94%",
+                               backgroundColor: task.isFavorite ? "#f4ed93" : ""
+                           }}>
                         <FormControlLabel control={<Checkbox checked={task.isCompleted} onChange={() => {
                             handleCompleteChange(task.id)
                         }}/>} label="Done"/>
-                        <p style={{
+                        <Typography sx={{
                             flexGrow: 1,
                             textDecoration: task.isCompleted ? 'line-through' : 'none',
                             wordWrap: 'break-word',
                             overflow: 'hidden',
+                            paddingTop: "9px",
+                            marginBottom: "9px",
                         }}>
                             {task.text}
-                        </p>
+                        </Typography>
                         <FormControlLabel control={<Checkbox checked={task.isFavorite} onChange={() => {
                             handleFavouriteChange(task.id)
                         }} sx={{marginLeft: 'auto'}}/>} label="Favourite"/>
+                        <Button variant="text" sx={{color:"red"}} onClick={()=>(handleDelete(task.id))}>Delete</Button>
                     </Paper>
                 ))}
             </Box>
